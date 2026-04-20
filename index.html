@@ -1,659 +1,493 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DASTUR.WEB — Link in Bio</title>
-  <meta name="description" content="Barcha linklaringiz bir sahifada" />
-  <style>
-    :root {
-      --card-bg: rgba(255,255,255,0.08); --card-border: rgba(255,255,255,0.15);
-      --text: #ffffff; --text-sec: rgba(255,255,255,0.7);
-      --btn-bg: rgba(255,255,255,0.1); --btn-border: rgba(255,255,255,0.2); --btn-hover: rgba(255,255,255,0.2);
-      --shadow: 0 8px 32px rgba(0,0,0,0.3); --radius: 16px;
-      --input-bg: rgba(255,255,255,0.1); --input-border: rgba(255,255,255,0.2);
-      --accent: #8b5cf6; --danger: #ef4444; --success: #10b981;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Bio Generator | Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      min-height: 100vh; color: var(--text); transition: background 0.6s ease;
-      display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px 60px;
-      overflow-x: hidden;
-    }
-    .container { position: relative; z-index: 1; width: 100%; max-width: 520px; }
-    .page { display: none; animation: fadeInUp 0.6s ease-out both; }
-    .page.active { display: block; }
-    @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        :root {
+            --bg-gradient: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+            --primary: #833ab4;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text: #333;
+            --border: #e8e8e8;
+        }
 
-    .auth-card {
-      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius);
-      padding: 28px; backdrop-filter: blur(14px); box-shadow: var(--shadow);
-    }
-    .auth-card h2 { text-align: center; margin-bottom: 20px; font-size: 22px; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: var(--input-bg); border-radius: 10px; padding: 4px; }
-    .tab {
-      flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-sec);
-      border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s;
-    }
-    .tab.active { background: var(--accent); color: white; }
-    .auth-form { display: flex; flex-direction: column; gap: 14px; }
-    input, textarea {
-      width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--input-border);
-      background: var(--input-bg); color: var(--text); font-size: 15px; outline: none; transition: border 0.3s;
-    }
-    input:focus, textarea:focus { border-color: var(--accent); }
-    button.primary {
-      padding: 13px; border: none; border-radius: 10px; background: var(--accent); color: white;
-      font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s;
-    }
-    button.primary:hover { filter: brightness(1.1); transform: translateY(-2px); }
-    .error-msg { color: var(--danger); font-size: 13px; text-align: center; min-height: 18px; }
-    .input-hint { font-size: 12px; color: var(--text-sec); margin-top: -8px; margin-bottom: 2px; }
-    .field-label { font-size: 12px; color: var(--text-sec); margin-bottom: 4px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .dash-header h2 { font-size: 22px; }
-    .btn-outline {
-      padding: 8px 14px; border: 1px solid var(--card-border); background: transparent; color: var(--text);
-      border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.3s;
-    }
-    .btn-outline:hover { background: var(--btn-bg); }
-    .dash-section {
-      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius);
-      padding: 18px; margin-bottom: 16px; backdrop-filter: blur(12px);
-    }
-    .dash-section h3 { font-size: 16px; margin-bottom: 12px; color: var(--text-sec); }
-    .link-item {
-      display: flex; align-items: center; justify-content: space-between; padding: 10px;
-      border: 1px solid var(--card-border); border-radius: 10px; margin-bottom: 8px; background: var(--btn-bg);
-    }
-    .link-item span { font-size: 14px; word-break: break-all; }
-    .link-actions { display: flex; gap: 6px; }
-    .icon-btn {
-      width: 30px; height: 30px; border-radius: 6px; border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;
-    }
-    .icon-btn.del { background: rgba(239,68,68,0.2); color: var(--danger); }
-    .icon-btn.del:hover { background: var(--danger); color: white; }
-    
-    /* Icon Grid Styles */
-    .icon-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-top: 10px;
-      margin-bottom: 15px;
-    }
-    .grid-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 5px;
-      border: 2px solid var(--btn-border);
-      border-radius: 10px;
-      background: var(--btn-bg);
-      cursor: pointer;
-      transition: all 0.2s;
-      color: var(--text-sec);
-    }
-    .grid-btn svg { width: 24px; height: 24px; fill: var(--text-sec); margin-bottom: 4px; transition: 0.2s; }
-    .grid-btn span { font-size: 10px; font-weight: 600; }
-    
-    .grid-btn.active {
-      border-color: var(--accent);
-      background: rgba(139, 92, 246, 0.2);
-    }
-    .grid-btn.active svg { fill: var(--text); }
-    .grid-btn.active span { color: var(--text); }
-    
-    .add-form { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 5px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            transition: background 0.5s ease;
+            color: var(--text);
+            padding: 20px;
+        }
 
-    /* Theme Picker */
-    .theme-picker { display: flex; flex-direction: column; gap: 10px; }
-    #colorPicker { width: 100%; height: 40px; border: none; border-radius: 8px; cursor: pointer; background: transparent; padding: 0; }
-    .presets { display: flex; gap: 8px; flex-wrap: wrap; }
-    .preset {
-      flex: 1; min-width: 40px; height: 32px; border-radius: 8px; border: 2px solid transparent;
-      cursor: pointer; transition: all 0.2s; opacity: 0.8;
-    }
-    .preset:hover, .preset.active { transform: scale(1.1); opacity: 1; border-color: white; }
+        .hidden { display: none !important; }
+        
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1200px; margin: 0 auto 20px; padding: 15px 20px;
+            background: var(--card-bg); border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
 
-    /* Profile Public */
-    .profile { text-align: center; margin-bottom: 32px; }
-    .avatar {
-      width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--card-border);
-      background: linear-gradient(135deg, #7c3aed, #06b6d4); color: white; font-size: 40px;
-      display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
-      box-shadow: var(--shadow); transition: transform 0.3s; overflow: hidden;
-    }
-    .avatar:hover { transform: scale(1.08) rotate(2deg); }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .name { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
-    .username { font-size: 15px; color: var(--text-sec); margin-bottom: 10px; }
-    .bio { font-size: 14px; color: var(--text-sec); line-height: 1.6; max-width: 360px; margin: 0 auto; }
-    
-    .links { display: flex; flex-direction: column; gap: 12px; }
-    .link {
-      display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 14px;
-      background: var(--btn-bg); border: 1px solid var(--btn-border); text-decoration: none;
-      color: var(--text); font-size: 15px; font-weight: 600; box-shadow: var(--shadow);
-      backdrop-filter: blur(12px); transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-    }
-    .link:hover { transform: translateY(-3px) scale(1.02); background: var(--btn-hover); }
-    .link:active { transform: scale(0.98); }
-    .link-icon {
-      width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center;
-      justify-content: center; flex-shrink: 0; overflow: hidden;
-    }
-    .link-icon svg { width: 20px; height: 20px; fill: white; display: block; }
-    .link-icon--instagram { background: linear-gradient(45deg, #f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
-    .link-icon--telegram { background: #2AABEE; }
-    .link-icon--youtube { background: #FF0000; }
-    .link-icon--website { background: #00d4aa; }
-    .link-icon--github { background: #24292e; }
-    .link-text { flex: 1; }
-    .link-text small { display: block; font-size: 12px; color: var(--text-sec); font-weight: 400; margin-top: 2px; }
-    .link-arrow { opacity: 0.4; transition: all 0.3s; }
-    .link:hover .link-arrow { opacity: 1; transform: translateX(4px); }
-    .link-arrow svg { width: 16px; height: 16px; stroke: var(--text); fill: none; stroke-width: 2; }
+        .logo { font-size: 20px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .header-controls { display: flex; gap: 10px; align-items: center; }
+        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 5px; border-radius: 8px; transition: 0.3s; }
+        .icon-btn:hover { background: rgba(0,0,0,0.05); }
 
-    .footer { text-align: center; margin-top: 32px; font-size: 12px; color: var(--text-sec); opacity: 0.6; }
-    .footer a { color: inherit; text-decoration: none; }
-    
-    /* Toast */
-    .toast {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 20px;
-      background: var(--accent); color: white; border-radius: 10px; font-size: 14px;
-      opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 100;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+        #authButtons button, #userMenu button {
+            padding: 8px 14px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s;
+            background: var(--primary); color: #fff; font-size: 14px;
+        }
+        #authButtons button:hover, #userMenu button:hover { opacity: 0.9; transform: translateY(-1px); }
 
-    /* URL Copy Box */
-    .url-box {
-      display: flex; gap: 8px; margin-top: 5px;
-    }
-    .url-box input { flex: 1; font-size: 13px; padding: 10px; }
-    .copy-btn { padding: 0 15px; font-size: 13px; white-space: nowrap; }
-  </style>
+        .theme-picker {
+            position: fixed; top: 70px; right: 20px;
+            background: var(--card-bg); padding: 15px; border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 100;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+        .color-option {
+            width: 45px; height: 45px; border-radius: 50%; cursor: pointer;
+            border: 3px solid transparent; transition: 0.3s;
+        }
+        .color-option:hover { transform: scale(1.1); border-color: #fff; }
+
+        .section { max-width: 520px; margin: 40px auto; animation: fadeIn 0.4s ease; }
+        .container {
+            background: var(--card-bg); border-radius: 24px; padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+
+        .auth-container { text-align: center; }
+        .auth-container h2 { margin-bottom: 20px; color: var(--primary); }
+        .auth-container input {
+            width: 100%; padding: 14px; margin-bottom: 12px; border: 2px solid var(--border);
+            border-radius: 12px; font-size: 15px; transition: 0.3s;
+        }
+        .auth-container input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(131,58,180,0.1); }
+        .auth-container button {
+            width: 100%; padding: 14px; margin-top: 10px; border: none; border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), #fd1d1d); color: #fff;
+            font-weight: 700; cursor: pointer; font-size: 15px; transition: 0.3s;
+        }
+        .auth-container button:hover { transform: translateY(-2px); }
+        .auth-container a { color: var(--primary); font-weight: 600; text-decoration: none; cursor: pointer; }
+        .admin-hint { font-size: 12px; color: #666; background: #f0f0f0; padding: 8px; border-radius: 8px; margin-top: 15px; }
+
+        .form-group { margin-top: 24px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 12px;
+            font-size: 14px; transition: 0.3s; background: #fafafa;
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+        .form-group textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+
+        .tone-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+        .tone-option {
+            padding: 8px 14px; border: 2px solid var(--border); border-radius: 50px;
+            cursor: pointer; font-size: 13px; font-weight: 500; transition: 0.3s; background: #fafafa;
+        }
+        .tone-option.active { background: var(--primary); color: #fff; border-color: transparent; }
+
+        .generate-btn {
+            width: 100%; padding: 14px; margin-top: 24px; border: none; border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), #fd1d1d, #fcb045);
+            color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .generate-btn:hover { transform: translateY(-2px); }
+
+        .results { margin-top: 24px; }
+        .bio-card {
+            background: #f8f8f8; border: 2px solid #eee; border-radius: 14px; padding: 18px;
+            margin-bottom: 10px; position: relative; transition: 0.3s;
+        }
+        .bio-card:hover { border-color: var(--primary); }
+        .bio-text { font-size: 14px; line-height: 1.6; white-space: pre-line; }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px; padding: 5px 12px;
+            border: 2px solid var(--primary); border-radius: 50px; background: #fff;
+            color: var(--primary); font-size: 11px; font-weight: 600; cursor: pointer;
+        }
+        .copy-btn.copied { background: #4CAF50; border-color: #4CAF50; color: #fff; }
+        .char-count { font-size: 11px; color: #888; margin-top: 6px; text-align: right; }
+        .char-count.limit { color: #e74c3c; font-weight: 600; }
+
+        .table-wrapper { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; }
+        th { background: #f5f5f5; font-weight: 700; color: var(--primary); }
+        .admin-btn { background: #2d3436; }
+        .admin-btn:hover { background: #111; }
+        .logout-btn { background: #e74c3c; }
+        .logout-btn:hover { background: #c0392b; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 10px; text-align: center; }
+            .container { padding: 20px; }
+            .theme-picker { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
 
-    <!-- AUTH PAGE -->
-    <section id="auth-page" class="page active">
-      <div class="auth-card">
-        <h2>🔐 DASTUR.WEB</h2>
-        <div class="tabs">
-          <button class="tab active" data-tab="register">Ro'yxatdan o'tish</button>
-          <button class="tab" data-tab="login">Kirish</button>
+<header>
+    <div class="logo">📸 IG Bio Generator</div>
+    <div class="header-controls">
+        <button id="themeBtn" class="icon-btn" title="Orqa fon rangi">🎨</button>
+        <div id="authButtons">
+            <button onclick="showAuth('login')">Kirish</button>
+            <button onclick="showAuth('register')">Ro'yxatdan o'tish</button>
         </div>
-        <form class="auth-form" id="authForm">
-          <input type="text" id="authNick" placeholder="Sahifa nomi (masalan: Sulaymon)" required />
-          <div class="input-hint">✅ Xohlagan nomni yozing. Keyinchalik o'zgartirish mumkin.</div>
-          <input type="password" id="authPass" placeholder="Parol" required />
-          <div class="error-msg" id="authMsg"></div>
-          <button type="submit" class="primary" id="authBtn">Davom etish</button>
+        <div id="userMenu" class="hidden">
+            <span id="userNameDisplay" style="font-weight:600; font-size:14px;"></span>
+            <button id="adminBtn" class="hidden admin-btn" onclick="showAdmin()">👥 Admin</button>
+            <button class="logout-btn" onclick="logout()">Chiqish</button>
+        </div>
+    </div>
+</header>
+
+<div id="themePicker" class="theme-picker hidden">
+    <div class="color-option" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)" data-theme="instagram"></div>
+    <div class="color-option" style="background:linear-gradient(135deg,#11998e,#38ef7d)" data-theme="nature"></div>
+    <div class="color-option" style="background:linear-gradient(135deg,#000428,#004e92)" data-theme="dark"></div>
+    <div class="color-option" style="background:linear-gradient(135deg,#ff9a9e,#fecfef)" data-theme="pink"></div>
+    <div class="color-option" style="background:linear-gradient(135deg,#2b5876,#4e4376)" data-theme="deep"></div>
+    <div class="color-option" style="background:linear-gradient(135deg,#f5f7fa,#c3cfe2)" data-theme="light"></div>
+</div>
+
+<section id="authSection" class="section">
+    <div class="container auth-container">
+        <h2 id="authTitle">Kirish</h2>
+        <form id="authForm">
+            <input type="text" id="authName" placeholder="Ismingiz" style="display:none;">
+            <input type="text" id="authEmail" placeholder="Email yoki 'admin' (admin kirish uchun)" required>
+            <input type="password" id="authPassword" placeholder="Parol" required>
+            <button type="submit" id="authSubmitBtn">Kirish</button>
         </form>
-      </div>
-    </section>
+        <p id="authSwitch" style="margin-top:15px; font-size:14px;">Hisobingiz yo'qmi? <a onclick="toggleAuthMode()">Ro'yxatdan o'ting</a></p>
+        <div class="admin-hint">🔐 Admin kirish uchun: Login: <b>admin</b> | Parol: <b>admin123</b></div>
+        <p id="authMsg" style="margin-top:10px; color:#e74c3c; font-size:13px; min-height:20px;"></p>
+    </div>
+</section>
 
-    <!-- DASHBOARD PAGE -->
-    <section id="dash-page" class="page">
-      <div class="dash-header">
-        <h2>⚙️ Boshqaruv</h2>
-        <div style="display:flex;gap:8px;">
-          <button class="btn-outline" onclick="previewProfile()">👁️ Ko'rish</button>
-          <button class="btn-outline" onclick="logout()">Chiqish</button>
+<section id="appSection" class="section hidden">
+    <div class="container">
+        <div class="form-group">
+            <label>💼 Kasbingiz / Sohangiz</label>
+            <input type="text" id="profession" placeholder="Masalan: Fotograf, Dasturchi, Fitness murabbiy...">
         </div>
-      </div>
-
-      <div class="dash-section">
-        <h3>👤 Profil</h3>
-        <div style="text-align:center;margin-bottom:14px;">
-          <div id="dashImgPreview" style="width:80px;height:80px;border-radius:50%;background:var(--input-bg);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--text-sec);border:2px solid var(--card-border);overflow:hidden;cursor:pointer;">📷</div>
-          <input type="file" id="profileImgInput" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
-          <button type="button" class="btn-outline" onclick="document.getElementById('profileImgInput').click()">📸 Rasm tanlash</button>
-          <button type="button" class="btn-outline" onclick="removeImage()" id="removeImgBtn" style="display:none;margin-left:6px;">❌ O'chirish</button>
+        <div class="form-group">
+            <label>🎯 Obunachilaringizga nima berasiz?</label>
+            <textarea id="value" placeholder="Masalan: Go'zal suratlar olish sirlari, dasturlash bo'yicha maslahatlar..."></textarea>
         </div>
-        <form id="profileForm" style="display:flex;flex-direction:column;gap:10px;">
-          <div>
-            <div class="field-label">Sahifa nomi (tahrir mumkin)</div>
-            <input type="text" id="dashName" placeholder="Masalan: Sulaymon" />
-          </div>
-          <div>
-            <div class="field-label">Kirish nomi & URL (o'zgartirilmaydi)</div>
-            <input type="text" id="dashUser" disabled style="opacity:0.6;cursor:not-allowed;" />
-          </div>
-          <textarea id="dashBio" rows="2" placeholder="Qisqa bio (1-2 gap)"></textarea>
-          <button type="submit" class="primary">Saqlash</button>
-        </form>
-      </div>
-
-      <div class="dash-section">
-        <h3>🎨 Sahifa foni</h3>
-        <div class="theme-picker">
-          <input type="color" id="colorPicker" value="#302b63" title="O'z rangini tanla">
-          <div class="presets" id="presetsContainer"></div>
+        <div class="form-group">
+            <label>🎨 Bio uslubini tanlang</label>
+            <div class="tone-selector">
+                <div class="tone-option active" data-tone="professional">💼 Professional</div>
+                <div class="tone-option" data-tone="creative">🎨 Kreativ</div>
+                <div class="tone-option" data-tone="fun">😄 Qiziqarli</div>
+                <div class="tone-option" data-tone="minimal">✨ Minimal</div>
+            </div>
         </div>
-      </div>
+        <button class="generate-btn" onclick="generateBio()">⚡ Bio Yaratish</button>
+        <div id="results" class="results"></div>
+    </div>
+</section>
 
-      <div class="dash-section">
-        <h3>🔗 Linklar</h3>
-        <div id="linksList"></div>
-        
-        <form id="addLinkForm" class="add-form">
-          <div class="field-label">Tarmoqni tanlang:</div>
-          <div class="icon-grid" id="iconGrid"></div>
-          <input type="text" id="newTitle" placeholder="Nomi (Instagram)" required />
-          <input type="url" id="newUrl" placeholder="https://..." required />
-          <button type="submit" class="primary">+ Qo'shish</button>
-        </form>
-      </div>
-
-      <div class="dash-section">
-        <h3>🌐 Instagramga qo'yadigan link</h3>
-        <p style="margin-bottom:8px;color:var(--text-sec)">Ushbu linkni nusxalab, Instagram profilingizga qo'ying:</p>
-        <div class="url-box">
-          <input type="text" id="publicUrl" readonly />
-          <button class="btn-outline primary copy-btn" onclick="copyLink()">📋 Nusxalash</button>
+<section id="adminSection" class="section hidden">
+    <div class="container">
+        <h2>👥 Ro'yxatdan o'tgan foydalanuvchilar</h2>
+        <p style="margin-bottom:15px; font-size:13px; color:#666;">Jami: <span id="userCount">0</span> kishi</p>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>Ism</th><th>Email</th><th>Sana</th><th>Rol</th></tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr><td colspan="4" style="text-align:center; padding:20px;">Ma'lumot topilmadi</td></tr>
+                </tbody>
+            </table>
         </div>
-      </div>
-    </section>
+        <button onclick="showApp()">← Ortga qaytish</button>
+    </div>
+</section>
 
-    <!-- PUBLIC PAGE (Mehmonlar shuni ko'radi) -->
-    <section id="public-page" class="page">
-      <!-- Tahrirlash tugmasi (faqat egasi ko'radi) -->
-      <div style="text-align:right;margin-bottom:10px;">
-        <button id="editBtn" class="btn-outline" onclick="goToDashboard()" style="display:none;">⚙️ Tahrirlash</button>
-      </div>
+<script>
+    // ================= SOZLAMALAR =================
+    // ⚠️ Admin login va parolini shu yerdan o'zgartirishingiz mumkin
+    const ADMIN_LOGIN = 'admin';
+    const ADMIN_PASSWORD = 'admin123'; 
 
-      <div class="profile">
-        <div class="avatar" id="pubAvatar">👤</div>
-        <h1 class="name" id="pubName">Sahifa nomi</h1>
-        <p class="username" id="pubUser">@username</p>
-        <p class="bio" id="pubBio">Bio matni shu yerda chiqadi...</p>
-      </div>
-      <div class="links" id="pubLinks"></div>
-      <div class="footer">
-        <p>© 2026 · <a href="#" onclick="location.href=location.pathname;return false">DASTUR.WEB</a> bilan yaratilgan</p>
-      </div>
-    </section>
-  </div>
+    const USERS_KEY = 'igbio_users';
+    const SESSION_KEY = 'igbio_session';
+    const THEME_KEY = 'igbio_theme';
 
-  <div class="toast" id="toast">✅ Saqlandi</div>
+    function getUsers() { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
+    function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+    function getCurrentUser() { return JSON.parse(localStorage.getItem(SESSION_KEY)); }
+    function setCurrentUser(user) { localStorage.setItem(SESSION_KEY, JSON.stringify(user)); }
+    function clearSession() { localStorage.removeItem(SESSION_KEY); }
 
-  <script>
-    const DB_KEY = 'biolink_users';
-    const SESS_KEY = 'biolink_session';
-    const getUsers = () => JSON.parse(localStorage.getItem(DB_KEY) || '{}');
-    const saveUsers = u => localStorage.setItem(DB_KEY, JSON.stringify(u));
-    const getSession = () => JSON.parse(sessionStorage.getItem(SESS_KEY) || 'null');
-    const setSession = u => sessionStorage.setItem(SESS_KEY, JSON.stringify(u));
-    const clearSession = () => sessionStorage.removeItem(SESS_KEY);
+    // ================= AUTH =================
+    let authMode = 'login';
 
-    const DEFAULT_GRADIENT = 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)';
-    const PRESETS = [
-      { name: 'Default', gradient: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)' },
-      { name: 'Sunset', gradient: 'linear-gradient(135deg, #ff0844, #ffb199)' },
-      { name: 'Ocean', gradient: 'linear-gradient(135deg, #667eea, #764ba2)' },
-      { name: 'Forest', gradient: 'linear-gradient(135deg, #11998e, #38ef7d)' },
-      { name: 'Candy', gradient: 'linear-gradient(135deg, #f093fb, #f5576c)' }
-    ];
-
-    let selectedIcon = 'instagram';
-
-    function showPage(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
+    function showAuth(mode) {
+        authMode = mode;
+        document.getElementById('authSection').classList.remove('hidden');
+        document.getElementById('appSection').classList.add('hidden');
+        document.getElementById('adminSection').classList.add('hidden');
+        updateAuthUI();
     }
 
-    function applyTheme(gradient) {
-      document.body.style.background = gradient;
+    function toggleAuthMode() {
+        authMode = authMode === 'login' ? 'register' : 'login';
+        updateAuthUI();
+        document.getElementById('authMsg').textContent = '';
     }
 
-    function init() {
-      // Theme Presets
-      const container = document.getElementById('presetsContainer');
-      PRESETS.forEach((p) => {
-        const btn = document.createElement('button');
-        btn.className = 'preset';
-        btn.style.background = p.gradient;
-        btn.title = p.name;
-        btn.onclick = () => setTheme(p.gradient);
-        container.appendChild(btn);
-      });
+    function updateAuthUI() {
+        document.getElementById('authTitle').textContent = authMode === 'login' ? 'Kirish' : "Ro'yxatdan o'tish";
+        document.getElementById('authName').style.display = authMode === 'register' ? 'block' : 'none';
+        document.getElementById('authSubmitBtn').textContent = authMode === 'login' ? 'Kirish' : "Ro'yxatdan o'tish";
+        document.getElementById('authSwitch').innerHTML = authMode === 'login' 
+            ? 'Hisobingiz yo\'qmi? <a onclick="toggleAuthMode()">Ro\'yxatdan o\'ting</a>' 
+            : 'Hisobingiz bormi? <a onclick="toggleAuthMode()">Kirish</a>';
+        document.getElementById('authEmail').value = '';
+        document.getElementById('authPassword').value = '';
+        document.getElementById('authMsg').textContent = '';
+    }
 
-      renderIconGrid();
+    document.getElementById('authForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('authName').value.trim();
+        const email = document.getElementById('authEmail').value.trim().toLowerCase();
+        const pass = document.getElementById('authPassword').value.trim();
+        const msg = document.getElementById('authMsg');
 
-      // Routing Logic
-      const params = new URLSearchParams(location.search);
-      const userParam = decodeURIComponent(params.get('user') || '');
+        if (!email || !pass) { msg.textContent = "⚠️ Barcha maydonlarni to'ldiring!"; return; }
 
-      // 1. Agar URL'da ?user=... bo'lsa -> PUBLIC PROFILNI KO'RSATISH
-      if (userParam) {
-        const users = getUsers();
-        if (users[userParam]) {
-          const u = users[userParam];
-          applyTheme(u.theme || DEFAULT_GRADIENT);
-          renderPublic(userParam);
-          showPage('public-page');
-          
-          // Agar hozir kirgan odam shu profilning egasi bo'lsa, "Tahrirlash" tugmasini ko'rsatish
-          const sess = getSession();
-          if (sess && sess.username === userParam) {
-            document.getElementById('editBtn').style.display = 'inline-block';
-          }
-          return;
+        // ADMIN KIRISH TEKSHIRUVI
+        if (authMode === 'login') {
+            if (email === ADMIN_LOGIN && pass === ADMIN_PASSWORD) {
+                setCurrentUser({ name: 'Admin', email: ADMIN_LOGIN, role: 'admin' });
+                initApp();
+                return;
+            }
         }
-      }
 
-      // 2. Agar ?user= bo'lmasa va tizimga kirgan bo'lsa -> DASHBOARD
-      const sess = getSession();
-      if (sess) {
         const users = getUsers();
-        const u = users[sess.username];
-        applyTheme(u.theme || DEFAULT_GRADIENT);
-        loadDashboard(sess.username);
-        showPage('dash-page');
-      } else {
-        // 3. Hech narsa bo'lmasa -> KIRISH OYNASI
-        applyTheme(DEFAULT_GRADIENT);
-        showPage('auth-page');
-      }
-    }
 
-    // --- Icon Grid ---
-    function renderIconGrid() {
-      const grid = document.getElementById('iconGrid');
-      grid.innerHTML = '';
-      const icons = ['instagram', 'telegram', 'youtube', 'github', 'website'];
-      icons.forEach(type => {
-        const btn = document.createElement('button');
-        btn.className = `grid-btn ${type === selectedIcon ? 'active' : ''}`;
-        btn.type = 'button';
-        btn.onclick = () => { selectedIcon = type; renderIconGrid(); };
-        btn.innerHTML = `${getIconSVG(type)}<span>${capitalize(type)}</span>`;
-        grid.appendChild(btn);
-      });
-    }
-
-    function capitalize(s) {
-      const map = { 'instagram':'Instagram', 'telegram':'Telegram', 'youtube':'YouTube', 'github':'GitHub', 'website':'Web-sayt' };
-      return map[s] || s;
-    }
-
-    // --- Navigation ---
-    window.goToDashboard = () => {
-      // URL parametrlarni tozalab, Dashboardga qaytish
-      window.location.search = '';
-    };
-
-    window.previewProfile = () => {
-      const sess = getSession();
-      window.open(`?user=${encodeURIComponent(sess.username)}`, '_blank');
-    };
-
-    window.copyLink = () => {
-      const input = document.getElementById('publicUrl');
-      input.select();
-      document.execCommand('copy');
-      showToast("Link nusxalandi!");
-    };
-
-    // --- Theme ---
-    window.setTheme = function(gradient) {
-      applyTheme(gradient);
-      const sess = getSession();
-      if (sess) {
-        const users = getUsers();
-        users[sess.username].theme = gradient;
-        saveUsers(users);
-        showToast("Fon rangi saqlandi");
-      }
-    };
-
-    document.getElementById('colorPicker').addEventListener('input', e => {
-      const color = e.target.value;
-      const gradient = `linear-gradient(135deg, ${color}, ${adjustColor(color, -40)})`;
-      setTheme(gradient);
+        if (authMode === 'register') {
+            if (!name) { msg.textContent = "⚠️ Ismingizni kiriting!"; return; }
+            if (users.find(u => u.email === email)) {
+                msg.textContent = "⚠️ Bu email allaqachon ro'yxatdan o'tgan!"; return;
+            }
+            // Hamma oddiy foydalanuvchi bo'lib ro'yxatdan o'tadi
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: pass,
+                role: 'user',
+                date: new Date().toLocaleString('uz-UZ')
+            };
+            users.push(newUser);
+            saveUsers(users);
+            setCurrentUser({ name: newUser.name, email: newUser.email, role: 'user' });
+            msg.style.color = '#27ae60';
+            msg.textContent = "✅ Muvaffaqiyatli ro'yxatdan o'tdingiz!";
+            setTimeout(() => initApp(), 800);
+        } else {
+            // ODDIY FOYDALANUVCHI KIRISHI
+            const user = users.find(u => u.email === email && u.password === pass);
+            if (!user) { msg.style.color = '#e74c3c'; msg.textContent = "❌ Email yoki parol noto'g'ri!"; return; }
+            setCurrentUser({ name: user.name, email: user.email, role: user.role });
+            initApp();
+        }
     });
 
-    function adjustColor(hex, amount) {
-      hex = hex.replace('#', '');
-      const num = parseInt(hex, 16);
-      let r = Math.min(255, Math.max(0, (num >> 16) + amount));
-      let g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
-      let b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
-      return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+    function logout() {
+        clearSession();
+        document.getElementById('authButtons').classList.remove('hidden');
+        document.getElementById('userMenu').classList.add('hidden');
+        showAuth('login');
     }
 
-    // --- Auth ---
-    const authForm = document.getElementById('authForm');
-    const tabs = document.querySelectorAll('.tab');
-    let authMode = 'register';
+    // ================= THEME =================
+    const themes = {
+        instagram: 'linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)',
+        nature: 'linear-gradient(135deg, #11998e, #38ef7d)',
+        dark: 'linear-gradient(135deg, #000428, #004e92)',
+        pink: 'linear-gradient(135deg, #ff9a9e, #fecfef)',
+        deep: 'linear-gradient(135deg, #2b5876, #4e4376)',
+        light: 'linear-gradient(135deg, #f5f7fa, #c3cfe2)'
+    };
 
-    tabs.forEach(t => t.onclick = () => {
-      tabs.forEach(x => x.classList.remove('active'));
-      t.classList.add('active');
-      authMode = t.dataset.tab;
-      document.getElementById('authBtn').textContent = authMode === 'register' ? "Ro'yxatdan o'tish" : "Kirish";
-      document.getElementById('authMsg').textContent = '';
+    function setTheme(key) {
+        document.documentElement.style.setProperty('--bg-gradient', themes[key]);
+        localStorage.setItem(THEME_KEY, key);
+    }
+
+    function loadTheme() {
+        const saved = localStorage.getItem(THEME_KEY) || 'instagram';
+        setTheme(saved);
+    }
+
+    document.getElementById('themeBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('themePicker').classList.toggle('hidden');
     });
 
-    authForm.onsubmit = e => {
-      e.preventDefault();
-      const nick = document.getElementById('authNick').value;
-      const pass = document.getElementById('authPass').value;
-      const msg = document.getElementById('authMsg');
+    document.querySelectorAll('.color-option').forEach(opt => {
+        opt.addEventListener('click', () => setTheme(opt.dataset.theme));
+    });
 
-      if (!nick || !pass) { msg.textContent = 'Ikkala maydonni ham to\'ldiring'; return; }
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#themePicker') && !e.target.closest('#themeBtn')) {
+            document.getElementById('themePicker').classList.add('hidden');
+        }
+    });
 
-      const users = getUsers();
-      if (authMode === 'register') {
-        if (users[nick]) { msg.textContent = 'Bu nom allaqachon band'; return; }
-        users[nick] = { username: nick, displayName: nick, pass, bio: '', links: [], image: null, theme: DEFAULT_GRADIENT };
-        saveUsers(users);
-        msg.style.color = 'var(--success)';
-        msg.textContent = "Muvaffaqiyatli ro'yxatdan o'tdingiz!";
-      } else {
-        if (!users[nick] || users[nick].pass !== pass) { msg.style.color = 'var(--danger)'; msg.textContent = "Nom yoki parol noto'g'ri"; return; }
-        msg.style.color = 'var(--success)';
-        msg.textContent = "Kirish muvaffaqiyatli!";
-      }
+    // ================= APP NAV & INIT =================
+    function initApp() {
+        const user = getCurrentUser();
+        if (!user) return showAuth('login');
 
-      setTimeout(() => {
-        setSession(users[nick]);
-        applyTheme(users[nick].theme || DEFAULT_GRADIENT);
-        loadDashboard(nick);
-        showPage('dash-page');
-        authForm.reset();
-        msg.textContent = '';
-      }, 600);
-    };
+        document.getElementById('authButtons').classList.add('hidden');
+        document.getElementById('userMenu').classList.remove('hidden');
+        document.getElementById('userNameDisplay').textContent = `👤 ${user.name}`;
+        
+        // Faqat admin ko'rsin
+        if (user.role === 'admin') {
+            document.getElementById('adminBtn').classList.remove('hidden');
+        } else {
+            document.getElementById('adminBtn').classList.add('hidden');
+        }
 
-    // --- Dashboard Logic ---
-    function loadDashboard(username) {
-      const u = getUsers()[username];
-      document.getElementById('dashName').value = u.displayName;
-      document.getElementById('dashUser').value = u.username;
-      document.getElementById('dashBio').value = u.bio || '';
-      document.getElementById('colorPicker').value = '#302b63';
-      
-      const prev = document.getElementById('dashImgPreview');
-      const rmBtn = document.getElementById('removeImgBtn');
-      if (u.image) {
-        prev.innerHTML = `<img src="${u.image}" style="width:100%;height:100%;object-fit:cover;">`;
-        prev.style.background = 'transparent';
-        rmBtn.style.display = 'inline-block';
-      } else {
-        prev.innerHTML = '📷';
-        prev.style.background = 'var(--input-bg)';
-        rmBtn.style.display = 'none';
-      }
-
-      renderLinksList(username);
-      
-      // Linkni generatsiya qilish
-      const safeUrl = `${location.origin}${location.pathname}?user=${encodeURIComponent(username)}`;
-      document.getElementById('publicUrl').value = safeUrl;
+        document.getElementById('authSection').classList.add('hidden');
+        document.getElementById('appSection').classList.remove('hidden');
+        document.getElementById('adminSection').classList.add('hidden');
     }
 
-    document.getElementById('profileForm').onsubmit = e => {
-      e.preventDefault();
-      const sess = getSession();
-      const users = getUsers();
-      const newName = document.getElementById('dashName').value;
-      users[sess.username].displayName = newName || users[sess.username].username;
-      users[sess.username].bio = document.getElementById('dashBio').value;
-      saveUsers(users);
-      showToast("Profil yangilandi");
-    };
+    function showApp() {
+        document.getElementById('appSection').classList.remove('hidden');
+        document.getElementById('adminSection').classList.add('hidden');
+    }
 
-    // --- Image ---
-    window.handleImageUpload = function(input) {
-      const file = input.files[0];
-      if (!file) return;
-      if (file.size > 2 * 1024 * 1024) { alert("Rasm hajmi 2MB dan kichik bo'lishi kerak."); input.value = ''; return; }
-      const reader = new FileReader();
-      reader.onload = e => {
-        const base64 = e.target.result;
-        const sess = getSession();
+    function showAdmin() {
+        const user = getCurrentUser();
+        if (!user || user.role !== 'admin') return alert("⛔ Faqat admin ko'rishi mumkin!");
+
         const users = getUsers();
-        users[sess.username].image = base64;
-        saveUsers(users);
-        const prev = document.getElementById('dashImgPreview');
-        prev.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;">`;
-        prev.style.background = 'transparent';
-        document.getElementById('removeImgBtn').style.display = 'inline-block';
-        showToast("Rasm saqlandi");
-      };
-      reader.readAsDataURL(file);
-    };
+        document.getElementById('userCount').textContent = users.length;
+        const tbody = document.getElementById('usersTableBody');
+        tbody.innerHTML = '';
 
-    window.removeImage = function() {
-      const sess = getSession();
-      const users = getUsers();
-      delete users[sess.username].image;
-      saveUsers(users);
-      const prev = document.getElementById('dashImgPreview');
-      prev.innerHTML = '📷';
-      prev.style.background = 'var(--input-bg)';
-      document.getElementById('removeImgBtn').style.display = 'none';
-      document.getElementById('profileImgInput').value = '';
-      showToast("Rasm o'chirildi");
-    };
+        if (users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Hali hech kim ro\'yxatdan o\'tmagan</td></tr>';
+        } else {
+            users.forEach(u => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${u.name}</td><td>${u.email}</td><td>${u.date}</td><td><span style="color:#555; font-weight:600">${u.role.toUpperCase()}</span></td>`;
+                tbody.appendChild(tr);
+            });
+        }
 
-    // --- Links ---
-    document.getElementById('addLinkForm').onsubmit = e => {
-      e.preventDefault();
-      const sess = getSession();
-      const users = getUsers();
-      const title = document.getElementById('newTitle').value;
-      const url = document.getElementById('newUrl').value;
-      if (!title || !url) return;
-
-      users[sess.username].links.push({ id: Date.now(), title, url, icon: selectedIcon });
-      saveUsers(users);
-      document.getElementById('newTitle').value = '';
-      document.getElementById('newUrl').value = '';
-      renderLinksList(sess.username);
-      showToast("Link qo'shildi");
-    };
-
-    function renderLinksList(username) {
-      const users = getUsers();
-      const links = users[username].links;
-      const list = document.getElementById('linksList');
-      list.innerHTML = links.length ? '' : '<p style="color:var(--text-sec);font-size:14px;text-align:center;padding:10px">Hali link qo\'shmadingiz</p>';
-      links.forEach(l => {
-        const div = document.createElement('div');
-        div.className = 'link-item';
-        const iconSvg = getIconSVG(l.icon);
-        div.innerHTML = `
-          <span style="display:flex;align-items:center;gap:8px;">
-            <span style="width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;" class="link-icon--${l.icon}">${iconSvg}</span>
-            <b>${l.title}</b>
-          </span>
-          <div class="link-actions">
-            <button class="icon-btn del" onclick="deleteLink(${l.id})">🗑️</button>
-          </div>
-        `;
-        list.appendChild(div);
-      });
+        document.getElementById('appSection').classList.add('hidden');
+        document.getElementById('adminSection').classList.remove('hidden');
     }
 
-    window.deleteLink = id => {
-      const sess = getSession();
-      const users = getUsers();
-      users[sess.username].links = users[sess.username].links.filter(l => l.id !== id);
-      saveUsers(users);
-      renderLinksList(sess.username);
-      showToast("Link o'chirildi");
-    };
+    // ================= BIO GENERATOR =================
+    document.querySelectorAll('.tone-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+            document.querySelectorAll('.tone-option').forEach(o => o.classList.remove('active'));
+            opt.classList.add('active');
+        });
+    });
 
-    window.logout = () => {
-      clearSession();
-      applyTheme(DEFAULT_GRADIENT);
-      showPage('auth-page');
-      showToast("Tizimdan chiqdingiz");
-    };
-
-    // --- Public Render ---
-    function renderPublic(username) {
-      const users = getUsers();
-      const u = users[username];
-      
-      const avatarEl = document.getElementById('pubAvatar');
-      if (u.image) {
-        avatarEl.innerHTML = `<img src="${u.image}" alt="${u.displayName}">`;
-      } else {
-        avatarEl.innerHTML = u.displayName.charAt(0).toUpperCase();
-        avatarEl.style.background = 'linear-gradient(135deg, #7c3aed, #06b6d4)';
-      }
-
-      document.getElementById('pubName').textContent = u.displayName;
-      document.getElementById('pubUser').textContent = `@${u.username}`;
-      document.getElementById('pubBio').textContent = u.bio || 'Bio hali kiritilmagan...';
-
-      const container = document.getElementById('pubLinks');
-      container.innerHTML = '';
-      u.links.forEach((l, i) => {
-        const a = document.createElement('a');
-        a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.className = 'link';
-        a.style.animationDelay = `${0.1 + i * 0.1}s`;
-        a.innerHTML = `
-          <div class="link-icon link-icon--${l.icon}">${getIconSVG(l.icon)}</div>
-          <div class="link-text">${l.title}</div>
-          <div class="link-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-        `;
-        container.appendChild(a);
-      });
+    function getActiveTone() {
+        return document.querySelector('.tone-option.active')?.dataset.tone || 'professional';
     }
 
-    // --- Icons ---
-    function getIconSVG(type) {
-      const icons = {
-        instagram: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>`,
-        telegram: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>`,
-        youtube: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
-        github: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 1.694 1.27.768-.213 1.634-.323 2.5-.323.87 0 1.73.11 2.5.323 1.689-1.593 2.694-1.27 2.694-1.27.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>`,
-        website: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.374 0 0 5.373 0 12c0 6.627 5.374 12 12 12 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12zm5.894 17.288H6.105l1.53-5.268h4.73L10.835 6.732h4.73l-1.53 5.288H18.76l-1.53 5.268H20.29z"/></svg>`
-      };
-      return icons[type] || icons.website;
+    function generateBio() {
+        const prof = document.getElementById('profession').value.trim();
+        const val = document.getElementById('value').value.trim();
+        const tone = getActiveTone();
+
+        if (!prof || !val) return alert("⚠️ Kasb va qiymat maydonlarini to'ldiring!");
+
+        const bios = createBios(prof, val, tone);
+        displayBios(bios);
     }
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2500);
+    function createBios(p, v, tone) {
+        if (tone === 'professional') return [
+            `👤 ${p}\n🎯 ${v}\n📩 Bog'lanish: DM\n🔗 Pastdagi havoladan foydalaning`,
+            `✅ Professional ${p.toLowerCase()}\n📌 ${v}\n🌟 Sifat va ishonch\n📲 Hamkorlik uchun yozing`
+        ];
+        if (tone === 'creative') return [
+            `🎨 ${p} — san'atkor\n💫 ${v}\n🌈 Har bir post — yangi dunyo\n👇 Kuzating`,
+            `✨ ${p} | Kreativ yondashuv\n💎 ${v}\n🚀 Cheksiz ilhom manbai\n🔗 Link quyida`
+        ];
+        if (tone === 'fun') return [
+            `😎 ${p} — lekin zerikarli emas!\n🎉 ${v}\n☕ Kofe bilan ishlayman\n👇 Kuzat, pushaymon bo'lmaysan`,
+            `🤩 ${p} va boshqa ajoyib narsalar\n💪 ${v}\n😂 Ba'zan hazil, har doim foyda\n📲 Qo'shil!`
+        ];
+        return [
+            `${p}.\n${v}.\nBog'lanish: DM`,
+            `▫️ ${p}\n▫️ ${v}\n👇`
+        ];
     }
 
-    init();
-  </script>
+    function displayBios(bios) {
+        const container = document.getElementById('results');
+        container.innerHTML = '<h3 style="margin-bottom:15px; font-size:16px;">✨ Tayyor Bio Variantlar</h3>';
+
+        bios.forEach((bio, i) => {
+            const chars = bio.length;
+            const card = document.createElement('div');
+            card.className = 'bio-card';
+            card.style.animationDelay = `${i*0.1}s`;
+            card.innerHTML = `
+                <div class="bio-text">${bio}</div>
+                <div class="char-count ${chars>150?'limit':''}">${chars} / 150 belgi ${chars>150?'⚠️':'✅'}</div>
+                <button class="copy-btn" onclick="copyBio(this)">📋 Nusxa</button>
+            `;
+            card.dataset.bio = bio;
+            container.appendChild(card);
+        });
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function copyBio(btn) {
+        const card = btn.closest('.bio-card');
+        const text = card.dataset.bio;
+        navigator.clipboard.writeText(text).then(() => {
+            btn.textContent = '✅ Nusxalandi!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = '📋 Nusxa';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+
+    // ================= INIT =================
+    window.addEventListener('load', () => {
+        loadTheme();
+        initApp();
+    });
+</script>
+
 </body>
 </html>
