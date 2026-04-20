@@ -4,137 +4,226 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instagram Bio Generator | Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
         :root {
-            --bg-gradient: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
-            --primary: #833ab4;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --text: #333;
-            --border: #e8e8e8;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-light: #eef2ff;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --card-border: rgba(255, 255, 255, 0.5);
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
             background: var(--bg-gradient);
-            transition: background 0.5s ease;
-            color: var(--text);
+            background-attachment: fixed;
+            color: var(--text-main);
             padding: 20px;
+            transition: background 0.6s ease;
         }
 
-        .hidden { display: none !important; }
-        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
+
+        .hidden { display: none !important; opacity: 0; }
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header */
         header {
-            display: flex; justify-content: space-between; align-items: center;
-            max-width: 1200px; margin: 0 auto 20px; padding: 15px 20px;
-            background: var(--card-bg); border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            max-width: 1080px;
+            margin: 0 auto 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
         }
 
-        .logo { font-size: 20px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-        .header-controls { display: flex; gap: 10px; align-items: center; }
-        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 5px; border-radius: 8px; transition: 0.3s; }
-        .icon-btn:hover { background: rgba(0,0,0,0.05); }
-
-        #authButtons button, #userMenu button {
-            padding: 8px 14px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s;
-            background: var(--primary); color: #fff; font-size: 14px;
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #9333ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
         }
-        #authButtons button:hover, #userMenu button:hover { opacity: 0.9; transform: translateY(-1px); }
 
+        .header-controls { display: flex; align-items: center; gap: 12px; }
+        .icon-btn {
+            width: 40px; height: 40px;
+            border: none; background: transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer; font-size: 18px;
+            transition: var(--transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .icon-btn:hover { background: rgba(0,0,0,0.05); transform: scale(1.05); }
+
+        .btn {
+            padding: 10px 18px;
+            border: none; border-radius: var(--radius-md);
+            font-weight: 600; font-size: 14px;
+            cursor: pointer; transition: var(--transition);
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,0.25); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99,102,241,0.35); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { background: #f9fafb; border-color: #d1d5db; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-dark { background: #111827; color: #fff; }
+        .btn-dark:hover { background: #030712; }
+
+        /* Theme Picker */
         .theme-picker {
-            position: fixed; top: 70px; right: 20px;
-            background: var(--card-bg); padding: 15px; border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 100;
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-            animation: fadeIn 0.3s ease;
+            position: fixed; top: 72px; right: 20px;
+            background: var(--card-bg); backdrop-filter: blur(12px);
+            padding: 16px; border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl); z-index: 100;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+            border: 1px solid var(--card-border);
+            transform-origin: top right;
         }
-        .color-option {
-            width: 45px; height: 45px; border-radius: 50%; cursor: pointer;
-            border: 3px solid transparent; transition: 0.3s;
+        .theme-picker.hidden { display: none; }
+        .color-opt {
+            width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
+            border: 3px solid transparent; transition: var(--transition);
+            box-shadow: var(--shadow-sm);
         }
-        .color-option:hover { transform: scale(1.1); border-color: #fff; }
+        .color-opt:hover { transform: scale(1.1); border-color: #fff; }
+        .color-opt.active { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.3); }
 
-        .section { max-width: 520px; margin: 40px auto; animation: fadeIn 0.4s ease; }
-        .container {
-            background: var(--card-bg); border-radius: 24px; padding: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        /* Main Container */
+        .main-container {
+            max-width: 1080px;
+            margin: 0 auto;
         }
 
-        .auth-container { text-align: center; }
-        .auth-container h2 { margin-bottom: 20px; color: var(--primary); }
-        .auth-container input {
-            width: 100%; padding: 14px; margin-bottom: 12px; border: 2px solid var(--border);
-            border-radius: 12px; font-size: 15px; transition: 0.3s;
+        .section {
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            box-shadow: var(--shadow-xl);
         }
-        .auth-container input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(131,58,180,0.1); }
-        .auth-container button {
-            width: 100%; padding: 14px; margin-top: 10px; border: none; border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary), #fd1d1d); color: #fff;
-            font-weight: 700; cursor: pointer; font-size: 15px; transition: 0.3s;
-        }
-        .auth-container button:hover { transform: translateY(-2px); }
-        .auth-container a { color: var(--primary); font-weight: 600; text-decoration: none; cursor: pointer; }
-        .admin-hint { font-size: 12px; color: #666; background: #f0f0f0; padding: 8px; border-radius: 8px; margin-top: 15px; }
+        .section.wide { max-width: 720px; }
 
-        .form-group { margin-top: 24px; }
-        .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 12px;
-            font-size: 14px; transition: 0.3s; background: #fafafa;
-        }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
-        .form-group textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+        h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; color: var(--text-main); }
+        .subtitle { color: var(--text-muted); font-size: 15px; margin-bottom: 28px; }
 
-        .tone-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
-        .tone-option {
-            padding: 8px 14px; border: 2px solid var(--border); border-radius: 50px;
-            cursor: pointer; font-size: 13px; font-weight: 500; transition: 0.3s; background: #fafafa;
+        /* Forms */
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-weight: 600; font-size: 13px; color: var(--text-main); margin-bottom: 8px; }
+        .form-input, .form-textarea {
+            width: 100%; padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 15px; font-family: inherit;
+            background: #fff; color: var(--text-main);
+            transition: var(--transition);
         }
-        .tone-option.active { background: var(--primary); color: #fff; border-color: transparent; }
-
-        .generate-btn {
-            width: 100%; padding: 14px; margin-top: 24px; border: none; border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary), #fd1d1d, #fcb045);
-            color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        .form-input:focus, .form-textarea:focus {
+            outline: none; border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
         }
-        .generate-btn:hover { transform: translateY(-2px); }
+        .form-textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
 
-        .results { margin-top: 24px; }
+        .tone-selector { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tone-opt {
+            padding: 9px 16px; border: 1.5px solid var(--border);
+            border-radius: 50px; cursor: pointer; font-size: 13px; font-weight: 500;
+            transition: var(--transition); background: #fff; user-select: none;
+        }
+        .tone-opt:hover { border-color: var(--primary); background: var(--primary-light); }
+        .tone-opt.active { background: var(--primary); color: #fff; border-color: transparent; box-shadow: 0 4px 10px rgba(99,102,241,0.2); }
+
+        /* Bio Cards */
+        .results { margin-top: 28px; display: none; }
+        .results.show { display: block; }
         .bio-card {
-            background: #f8f8f8; border: 2px solid #eee; border-radius: 14px; padding: 18px;
-            margin-bottom: 10px; position: relative; transition: 0.3s;
+            background: #fff; border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg); padding: 20px;
+            margin-bottom: 14px; position: relative; transition: var(--transition);
         }
-        .bio-card:hover { border-color: var(--primary); }
-        .bio-text { font-size: 14px; line-height: 1.6; white-space: pre-line; }
+        .bio-card:hover { border-color: var(--primary); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .bio-text { font-size: 15px; line-height: 1.7; color: var(--text-main); white-space: pre-line; }
+        .bio-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+        .char-count { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .char-count.limit { color: #ef4444; font-weight: 600; }
         .copy-btn {
-            position: absolute; top: 10px; right: 10px; padding: 5px 12px;
-            border: 2px solid var(--primary); border-radius: 50px; background: #fff;
-            color: var(--primary); font-size: 11px; font-weight: 600; cursor: pointer;
+            padding: 6px 14px; border: 1.5px solid var(--border); border-radius: 50px;
+            background: #fff; color: var(--text-main); font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px;
         }
-        .copy-btn.copied { background: #4CAF50; border-color: #4CAF50; color: #fff; }
-        .char-count { font-size: 11px; color: #888; margin-top: 6px; text-align: right; }
-        .char-count.limit { color: #e74c3c; font-weight: 600; }
+        .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .copy-btn.copied { background: #10b981; border-color: #10b981; color: #fff; }
 
-        .table-wrapper { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 1px solid #eee; }
-        table { width: 100%; border-collapse: collapse; background: #fff; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; }
-        th { background: #f5f5f5; font-weight: 700; color: var(--primary); }
-        .admin-btn { background: #2d3436; }
-        .admin-btn:hover { background: #111; }
-        .logout-btn { background: #e74c3c; }
-        .logout-btn:hover { background: #c0392b; }
+        /* Admin Table */
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center; }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+        .stat-label { font-size: 13px; color: var(--text-muted); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        @media (max-width: 600px) {
-            header { flex-direction: column; gap: 10px; text-align: center; }
-            .container { padding: 20px; }
-            .theme-picker { grid-template-columns: repeat(2, 1fr); }
+        .table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); background: #fff; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
+        th { background: #f9fafb; font-weight: 600; color: var(--text-muted); text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        td { color: var(--text-main); }
+        .role-badge { padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600; }
+        .role-user { background: #e5e7eb; color: #4b5563; }
+        .role-admin { background: #fef3c7; color: #b45309; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f9fafb; }
+
+        /* Auth Specific */
+        .auth-toggle { text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+        .auth-toggle a { color: var(--primary); font-weight: 600; text-decoration: none; cursor: pointer; }
+        .auth-toggle a:hover { text-decoration: underline; }
+        .auth-msg { margin-top: 12px; font-size: 13px; min-height: 18px; text-align: center; }
+        .auth-msg.success { color: #10b981; }
+        .auth-msg.error { color: #ef4444; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            header { flex-direction: column; gap: 12px; text-align: center; }
+            .section { padding: 24px 20px; margin: 16px auto; }
+            .theme-picker { grid-template-columns: repeat(2, 1fr); right: 10px; top: 65px; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -143,315 +232,302 @@
 <header>
     <div class="logo">📸 IG Bio Generator</div>
     <div class="header-controls">
-        <button id="themeBtn" class="icon-btn" title="Orqa fon rangi">🎨</button>
+        <button id="themeBtn" class="icon-btn" title="Orqa fon mavzusi">🎨</button>
         <div id="authButtons">
-            <button onclick="showAuth('login')">Kirish</button>
-            <button onclick="showAuth('register')">Ro'yxatdan o'tish</button>
+            <button class="btn btn-outline" onclick="showAuth('login')">Kirish</button>
+            <button class="btn btn-primary" onclick="showAuth('register')">Ro'yxatdan o'tish</button>
         </div>
-        <div id="userMenu" class="hidden">
-            <span id="userNameDisplay" style="font-weight:600; font-size:14px;"></span>
-            <button id="adminBtn" class="hidden admin-btn" onclick="showAdmin()">👥 Admin</button>
-            <button class="logout-btn" onclick="logout()">Chiqish</button>
+        <div id="userMenu" class="hidden" style="display:flex; align-items:center; gap:10px;">
+            <span id="userNameDisplay" style="font-weight:600; font-size:14px; color:var(--text-main);"></span>
+            <button id="adminBtn" class="hidden btn btn-dark" onclick="showAdmin()">👥 Admin</button>
+            <button class="btn btn-danger" onclick="logout()">Chiqish</button>
         </div>
     </div>
 </header>
 
 <div id="themePicker" class="theme-picker hidden">
-    <div class="color-option" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)" data-theme="instagram"></div>
-    <div class="color-option" style="background:linear-gradient(135deg,#11998e,#38ef7d)" data-theme="nature"></div>
-    <div class="color-option" style="background:linear-gradient(135deg,#000428,#004e92)" data-theme="dark"></div>
-    <div class="color-option" style="background:linear-gradient(135deg,#ff9a9e,#fecfef)" data-theme="pink"></div>
-    <div class="color-option" style="background:linear-gradient(135deg,#2b5876,#4e4376)" data-theme="deep"></div>
-    <div class="color-option" style="background:linear-gradient(135deg,#f5f7fa,#c3cfe2)" data-theme="light"></div>
+    <div class="color-opt" style="background:linear-gradient(135deg,#667eea,#764ba2)" data-theme="default"></div>
+    <div class="color-opt" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)" data-theme="instagram"></div>
+    <div class="color-opt" style="background:linear-gradient(135deg,#11998e,#38ef7d)" data-theme="nature"></div>
+    <div class="color-opt" style="background:linear-gradient(135deg,#000428,#004e92)" data-theme="dark"></div>
+    <div class="color-opt" style="background:linear-gradient(135deg,#ff9a9e,#fecfef)" data-theme="pink"></div>
+    <div class="color-opt" style="background:linear-gradient(135deg,#f5f7fa,#c3cfe2)" data-theme="light"></div>
 </div>
 
-<section id="authSection" class="section">
-    <div class="container auth-container">
-        <h2 id="authTitle">Kirish</h2>
+<main class="main-container">
+    <!-- AUTH SECTION -->
+    <section id="authSection" class="section fade-in">
+        <h2 id="authTitle">Tizimga kirish</h2>
+        <p class="subtitle">Hisobingizga kirib, professional bio yaratishni boshlang.</p>
         <form id="authForm">
-            <input type="text" id="authName" placeholder="Ismingiz" style="display:none;">
-            <input type="text" id="authEmail" placeholder="Email yoki 'admin' (admin kirish uchun)" required>
-            <input type="password" id="authPassword" placeholder="Parol" required>
-            <button type="submit" id="authSubmitBtn">Kirish</button>
+            <div class="form-group hidden" id="nameGroup">
+                <label class="form-label">Ismingiz</label>
+                <input type="text" id="authName" class="form-input" placeholder="To'liq ismingiz">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email manzilingiz</label>
+                <input type="email" id="authEmail" class="form-input" placeholder="ism@example.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Parol</label>
+                <input type="password" id="authPassword" class="form-input" placeholder="••••••••" required>
+            </div>
+            <button type="submit" id="authSubmitBtn" class="btn btn-primary" style="width:100%; padding:14px; font-size:15px;">Kirish</button>
         </form>
-        <p id="authSwitch" style="margin-top:15px; font-size:14px;">Hisobingiz yo'qmi? <a onclick="toggleAuthMode()">Ro'yxatdan o'ting</a></p>
-        <div class="admin-hint">🔐 Admin kirish uchun: Login: <b>admin</b> | Parol: <b>admin123</b></div>
-        <p id="authMsg" style="margin-top:10px; color:#e74c3c; font-size:13px; min-height:20px;"></p>
-    </div>
-</section>
+        <div class="auth-toggle">
+            <span id="authSwitchText">Hisobingiz yo'qmi?</span>
+            <a onclick="toggleAuthMode()" id="authSwitchBtn">Ro'yxatdan o'ting</a>
+        </div>
+        <div id="authMsg" class="auth-msg"></div>
+    </section>
 
-<section id="appSection" class="section hidden">
-    <div class="container">
+    <!-- APP SECTION -->
+    <section id="appSection" class="section hidden fade-in">
+        <h2>Bio Yaratish</h2>
+        <p class="subtitle">Kasbingiz va obunachilarga beradigan qiymatingizni kiriting.</p>
+        
         <div class="form-group">
-            <label>💼 Kasbingiz / Sohangiz</label>
-            <input type="text" id="profession" placeholder="Masalan: Fotograf, Dasturchi, Fitness murabbiy...">
+            <label class="form-label">💼 Kasbingiz / Sohangiz</label>
+            <input type="text" id="profession" class="form-input" placeholder="Masalan: Fotograf, Dasturchi, Fitness murabbiy">
         </div>
         <div class="form-group">
-            <label>🎯 Obunachilaringizga nima berasiz?</label>
-            <textarea id="value" placeholder="Masalan: Go'zal suratlar olish sirlari, dasturlash bo'yicha maslahatlar..."></textarea>
+            <label class="form-label">🎯 Obunachilaringizga nima berasiz?</label>
+            <textarea id="value" class="form-textarea" placeholder="Masalan: Go'zal suratlar olish sirlari, dasturlash bo'yicha maslahatlar, sog'lom turmush tarzi..."></textarea>
         </div>
         <div class="form-group">
-            <label>🎨 Bio uslubini tanlang</label>
+            <label class="form-label">🎨 Bio uslubini tanlang</label>
             <div class="tone-selector">
-                <div class="tone-option active" data-tone="professional">💼 Professional</div>
-                <div class="tone-option" data-tone="creative">🎨 Kreativ</div>
-                <div class="tone-option" data-tone="fun">😄 Qiziqarli</div>
-                <div class="tone-option" data-tone="minimal">✨ Minimal</div>
+                <div class="tone-opt active" data-tone="professional">💼 Professional</div>
+                <div class="tone-opt" data-tone="creative">🎨 Kreativ</div>
+                <div class="tone-opt" data-tone="fun">😄 Qiziqarli</div>
+                <div class="tone-opt" data-tone="minimal">✨ Minimal</div>
             </div>
         </div>
-        <button class="generate-btn" onclick="generateBio()">⚡ Bio Yaratish</button>
+        <button class="btn btn-primary" onclick="generateBio()" style="width:100%; padding:14px; margin-top:24px; font-size:15px;">⚡ Bio Yaratish</button>
+        
         <div id="results" class="results"></div>
-    </div>
-</section>
+    </section>
 
-<section id="adminSection" class="section hidden">
-    <div class="container">
-        <h2>👥 Ro'yxatdan o'tgan foydalanuvchilar</h2>
-        <p style="margin-bottom:15px; font-size:13px; color:#666;">Jami: <span id="userCount">0</span> kishi</p>
-        <div class="table-wrapper">
+    <!-- ADMIN SECTION -->
+    <section id="adminSection" class="section wide hidden fade-in">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+            <div>
+                <h2>👥 Foydalanuvchilar</h2>
+                <p class="subtitle" style="margin:0;">Platformaga ro'yxatdan o'tgan barcha foydalanuvchilar ro'yxati.</p>
+            </div>
+            <button class="btn btn-outline" onclick="showApp()">← Ortga qaytish</button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value" id="userCount">0</div>
+                <div class="stat-label">Jami foydalanuvchilar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="todayCount">0</div>
+                <div class="stat-label">Bugun ro'yxatdan o'tgan</div>
+            </div>
+        </div>
+
+        <div class="table-wrap">
             <table>
                 <thead>
-                    <tr><th>Ism</th><th>Email</th><th>Sana</th><th>Rol</th></tr>
+                    <tr><th>Ism</th><th>Email</th><th>Ro'yxatdan o'tgan sana</th><th>Holat</th></tr>
                 </thead>
                 <tbody id="usersTableBody">
-                    <tr><td colspan="4" style="text-align:center; padding:20px;">Ma'lumot topilmadi</td></tr>
+                    <tr><td colspan="4" style="text-align:center; padding:24px; color:var(--text-muted);">Ma'lumotlar topilmadi</td></tr>
                 </tbody>
             </table>
         </div>
-        <button onclick="showApp()">← Ortga qaytish</button>
-    </div>
-</section>
+    </section>
+</main>
 
 <script>
-    // ================= SOZLAMALAR =================
-    // ⚠️ Admin login va parolini shu yerdan o'zgartirishingiz mumkin
-    const ADMIN_LOGIN = 'admin';
-    const ADMIN_PASSWORD = 'admin123'; 
+    // ================= KONFIGURATSIYA =================
+    // Admin ma'lumotlari faqat kod ichida. Foydalanuvchi interfeysda ko'rinmaydi.
+    const ADMIN_CREDENTIALS = { login: 'admin', pass: 'admin123' };
+    
+    const STORAGE_KEYS = { users: 'igbio_users', session: 'igbio_session', theme: 'igbio_theme' };
+    const themes = {
+        default: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        instagram: 'linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)',
+        nature: 'linear-gradient(135deg, #11998e, #38ef7d)',
+        dark: 'linear-gradient(135deg, #000428, #004e92)',
+        pink: 'linear-gradient(135deg, #ff9a9e, #fecfef)',
+        light: 'linear-gradient(135deg, #f5f7fa, #c3cfe2)'
+    };
 
-    const USERS_KEY = 'igbio_users';
-    const SESSION_KEY = 'igbio_session';
-    const THEME_KEY = 'igbio_theme';
+    // ================= YORDAMCHI FUNKSIYALAR =================
+    const $ = id => document.getElementById(id);
+    const getStorage = key => JSON.parse(localStorage.getItem(key));
+    const setStorage = (key, val) => localStorage.setItem(key, JSON.stringify(val));
 
-    function getUsers() { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
-    function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
-    function getCurrentUser() { return JSON.parse(localStorage.getItem(SESSION_KEY)); }
-    function setCurrentUser(user) { localStorage.setItem(SESSION_KEY, JSON.stringify(user)); }
-    function clearSession() { localStorage.removeItem(SESSION_KEY); }
-
-    // ================= AUTH =================
+    // ================= AUTH TIZIMI =================
     let authMode = 'login';
 
     function showAuth(mode) {
         authMode = mode;
-        document.getElementById('authSection').classList.remove('hidden');
-        document.getElementById('appSection').classList.add('hidden');
-        document.getElementById('adminSection').classList.add('hidden');
+        $('authSection').classList.remove('hidden');
+        $('appSection').classList.add('hidden');
+        $('adminSection').classList.add('hidden');
         updateAuthUI();
     }
 
     function toggleAuthMode() {
         authMode = authMode === 'login' ? 'register' : 'login';
         updateAuthUI();
-        document.getElementById('authMsg').textContent = '';
+        $('authMsg').textContent = '';
+        $('authMsg').className = 'auth-msg';
     }
 
     function updateAuthUI() {
-        document.getElementById('authTitle').textContent = authMode === 'login' ? 'Kirish' : "Ro'yxatdan o'tish";
-        document.getElementById('authName').style.display = authMode === 'register' ? 'block' : 'none';
-        document.getElementById('authSubmitBtn').textContent = authMode === 'login' ? 'Kirish' : "Ro'yxatdan o'tish";
-        document.getElementById('authSwitch').innerHTML = authMode === 'login' 
-            ? 'Hisobingiz yo\'qmi? <a onclick="toggleAuthMode()">Ro\'yxatdan o\'ting</a>' 
-            : 'Hisobingiz bormi? <a onclick="toggleAuthMode()">Kirish</a>';
-        document.getElementById('authEmail').value = '';
-        document.getElementById('authPassword').value = '';
-        document.getElementById('authMsg').textContent = '';
+        $('authTitle').textContent = authMode === 'login' ? 'Tizimga kirish' : 'Ro\'yxatdan o\'tish';
+        $('authSubmitBtn').textContent = authMode === 'login' ? 'Kirish' : 'Hisob yaratish';
+        $('authSwitchText').textContent = authMode === 'login' ? 'Hisobingiz yo\'qmi?' : 'Hisobingiz bormi?';
+        $('authSwitchBtn').textContent = authMode === 'login' ? 'Ro\'yxatdan o\'ting' : 'Kirish';
+        $('nameGroup').classList.toggle('hidden', authMode === 'login');
+        $('authForm').reset();
     }
 
-    document.getElementById('authForm').addEventListener('submit', (e) => {
+    $('authForm').addEventListener('submit', e => {
         e.preventDefault();
-        const name = document.getElementById('authName').value.trim();
-        const email = document.getElementById('authEmail').value.trim().toLowerCase();
-        const pass = document.getElementById('authPassword').value.trim();
-        const msg = document.getElementById('authMsg');
+        const name = $('authName').value.trim();
+        const email = $('authEmail').value.trim().toLowerCase();
+        const pass = $('authPassword').value.trim();
+        const msg = $('authMsg');
 
-        if (!email || !pass) { msg.textContent = "⚠️ Barcha maydonlarni to'ldiring!"; return; }
+        if (!email || !pass) { msg.textContent = '⚠️ Barcha maydonlarni to\'ldiring'; msg.className = 'auth-msg error'; return; }
+        if (authMode === 'register' && !name) { msg.textContent = '⚠️ Ismingizni kiriting'; msg.className = 'auth-msg error'; return; }
 
-        // ADMIN KIRISH TEKSHIRUVI
-        if (authMode === 'login') {
-            if (email === ADMIN_LOGIN && pass === ADMIN_PASSWORD) {
-                setCurrentUser({ name: 'Admin', email: ADMIN_LOGIN, role: 'admin' });
-                initApp();
-                return;
-            }
+        const users = getStorage(STORAGE_KEYS.users) || [];
+
+        // ADMIN TEKSHIRUVI
+        if (authMode === 'login' && email === ADMIN_CREDENTIALS.login && pass === ADMIN_CREDENTIALS.pass) {
+            setStorage(STORAGE_KEYS.session, { name: 'Admin', email: ADMIN_CREDENTIALS.login, role: 'admin' });
+            initApp(); return;
         }
 
-        const users = getUsers();
-
+        // ODDIY FOYDALANUVCHI
         if (authMode === 'register') {
-            if (!name) { msg.textContent = "⚠️ Ismingizni kiriting!"; return; }
-            if (users.find(u => u.email === email)) {
-                msg.textContent = "⚠️ Bu email allaqachon ro'yxatdan o'tgan!"; return;
-            }
-            // Hamma oddiy foydalanuvchi bo'lib ro'yxatdan o'tadi
-            const newUser = {
-                id: Date.now(),
-                name: name,
-                email: email,
-                password: pass,
-                role: 'user',
-                date: new Date().toLocaleString('uz-UZ')
-            };
-            users.push(newUser);
-            saveUsers(users);
-            setCurrentUser({ name: newUser.name, email: newUser.email, role: 'user' });
-            msg.style.color = '#27ae60';
-            msg.textContent = "✅ Muvaffaqiyatli ro'yxatdan o'tdingiz!";
-            setTimeout(() => initApp(), 800);
+            if (users.find(u => u.email === email)) { msg.textContent = '⚠️ Bu email allaqachon ro\'yxatdan o\'tgan'; msg.className = 'auth-msg error'; return; }
+            users.push({ id: Date.now(), name, email, pass, role: 'user', date: new Date().toISOString() });
+            setStorage(STORAGE_KEYS.users, users);
+            setStorage(STORAGE_KEYS.session, { name, email, role: 'user' });
+            msg.textContent = '✅ Muvaffaqiyatli ro\'yxatdan o\'tdingiz!'; msg.className = 'auth-msg success';
+            setTimeout(initApp, 600);
         } else {
-            // ODDIY FOYDALANUVCHI KIRISHI
-            const user = users.find(u => u.email === email && u.password === pass);
-            if (!user) { msg.style.color = '#e74c3c'; msg.textContent = "❌ Email yoki parol noto'g'ri!"; return; }
-            setCurrentUser({ name: user.name, email: user.email, role: user.role });
+            const user = users.find(u => u.email === email && u.pass === pass);
+            if (!user) { msg.textContent = '❌ Email yoki parol noto\'g\'ri'; msg.className = 'auth-msg error'; return; }
+            setStorage(STORAGE_KEYS.session, { name: user.name, email: user.email, role: user.role });
             initApp();
         }
     });
 
     function logout() {
-        clearSession();
-        document.getElementById('authButtons').classList.remove('hidden');
-        document.getElementById('userMenu').classList.add('hidden');
+        localStorage.removeItem(STORAGE_KEYS.session);
+        $('authButtons').classList.remove('hidden');
+        $('userMenu').classList.add('hidden');
         showAuth('login');
     }
 
-    // ================= THEME =================
-    const themes = {
-        instagram: 'linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)',
-        nature: 'linear-gradient(135deg, #11998e, #38ef7d)',
-        dark: 'linear-gradient(135deg, #000428, #004e92)',
-        pink: 'linear-gradient(135deg, #ff9a9e, #fecfef)',
-        deep: 'linear-gradient(135deg, #2b5876, #4e4376)',
-        light: 'linear-gradient(135deg, #f5f7fa, #c3cfe2)'
-    };
-
+    // ================= MAVZU (THEME) =================
     function setTheme(key) {
-        document.documentElement.style.setProperty('--bg-gradient', themes[key]);
-        localStorage.setItem(THEME_KEY, key);
+        document.body.style.background = themes[key];
+        localStorage.setItem(STORAGE_KEYS.theme, key);
+        document.querySelectorAll('.color-opt').forEach(c => c.classList.toggle('active', c.dataset.theme === key));
     }
 
-    function loadTheme() {
-        const saved = localStorage.getItem(THEME_KEY) || 'instagram';
-        setTheme(saved);
-    }
+    $('themeBtn').addEventListener('click', e => { e.stopPropagation(); $('themePicker').classList.toggle('hidden'); });
+    document.querySelectorAll('.color-opt').forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
+    document.addEventListener('click', e => { if (!$('themePicker').contains(e.target) && e.target !== $('themeBtn')) $('themePicker').classList.add('hidden'); });
 
-    document.getElementById('themeBtn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        document.getElementById('themePicker').classList.toggle('hidden');
-    });
-
-    document.querySelectorAll('.color-option').forEach(opt => {
-        opt.addEventListener('click', () => setTheme(opt.dataset.theme));
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#themePicker') && !e.target.closest('#themeBtn')) {
-            document.getElementById('themePicker').classList.add('hidden');
-        }
-    });
-
-    // ================= APP NAV & INIT =================
+    // ================= APP NAVIGATSIYA =================
     function initApp() {
-        const user = getCurrentUser();
+        const user = getStorage(STORAGE_KEYS.session);
         if (!user) return showAuth('login');
 
-        document.getElementById('authButtons').classList.add('hidden');
-        document.getElementById('userMenu').classList.remove('hidden');
-        document.getElementById('userNameDisplay').textContent = `👤 ${user.name}`;
+        $('authButtons').classList.add('hidden');
+        $('userMenu').classList.remove('hidden');
+        $('userNameDisplay').textContent = `👤 ${user.name}`;
+        $('adminBtn').classList.toggle('hidden', user.role !== 'admin');
         
-        // Faqat admin ko'rsin
-        if (user.role === 'admin') {
-            document.getElementById('adminBtn').classList.remove('hidden');
-        } else {
-            document.getElementById('adminBtn').classList.add('hidden');
-        }
-
-        document.getElementById('authSection').classList.add('hidden');
-        document.getElementById('appSection').classList.remove('hidden');
-        document.getElementById('adminSection').classList.add('hidden');
+        $('authSection').classList.add('hidden');
+        $('appSection').classList.remove('hidden');
+        $('adminSection').classList.add('hidden');
     }
 
-    function showApp() {
-        document.getElementById('appSection').classList.remove('hidden');
-        document.getElementById('adminSection').classList.add('hidden');
-    }
+    function showApp() { $('appSection').classList.remove('hidden'); $('adminSection').classList.add('hidden'); }
 
     function showAdmin() {
-        const user = getCurrentUser();
-        if (!user || user.role !== 'admin') return alert("⛔ Faqat admin ko'rishi mumkin!");
+        const user = getStorage(STORAGE_KEYS.session);
+        if (user?.role !== 'admin') return alert('⛔ Ruxsat yo\'q');
 
-        const users = getUsers();
-        document.getElementById('userCount').textContent = users.length;
-        const tbody = document.getElementById('usersTableBody');
-        tbody.innerHTML = '';
+        const users = getStorage(STORAGE_KEYS.users) || [];
+        const today = new Date().toISOString().split('T')[0];
+        
+        $('userCount').textContent = users.length;
+        $('todayCount').textContent = users.filter(u => u.date.startsWith(today)).length;
+        
+        const tbody = $('usersTableBody');
+        tbody.innerHTML = users.length ? '' : '<tr><td colspan="4" style="text-align:center; padding:24px;">Hali hech kim ro\'yxatdan o\'tmagan</td></tr>';
+        
+        users.sort((a,b) => b.id - a.id).forEach(u => {
+            const tr = document.createElement('tr');
+            const d = new Date(u.date).toLocaleString('uz-UZ');
+            tr.innerHTML = `
+                <td style="font-weight:600">${u.name}</td>
+                <td style="color:var(--text-muted)">${u.email}</td>
+                <td>${d}</td>
+                <td><span class="role-badge ${u.role==='admin'?'role-admin':'role-user'}">${u.role.toUpperCase()}</span></td>
+            `;
+            tbody.appendChild(tr);
+        });
 
-        if (users.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Hali hech kim ro\'yxatdan o\'tmagan</td></tr>';
-        } else {
-            users.forEach(u => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${u.name}</td><td>${u.email}</td><td>${u.date}</td><td><span style="color:#555; font-weight:600">${u.role.toUpperCase()}</span></td>`;
-                tbody.appendChild(tr);
-            });
-        }
-
-        document.getElementById('appSection').classList.add('hidden');
-        document.getElementById('adminSection').classList.remove('hidden');
+        $('appSection').classList.add('hidden');
+        $('adminSection').classList.remove('hidden');
     }
 
     // ================= BIO GENERATOR =================
-    document.querySelectorAll('.tone-option').forEach(opt => {
+    document.querySelectorAll('.tone-opt').forEach(opt => {
         opt.addEventListener('click', () => {
-            document.querySelectorAll('.tone-option').forEach(o => o.classList.remove('active'));
+            document.querySelectorAll('.tone-opt').forEach(o => o.classList.remove('active'));
             opt.classList.add('active');
         });
     });
 
-    function getActiveTone() {
-        return document.querySelector('.tone-option.active')?.dataset.tone || 'professional';
-    }
-
     function generateBio() {
-        const prof = document.getElementById('profession').value.trim();
-        const val = document.getElementById('value').value.trim();
-        const tone = getActiveTone();
+        const prof = $('profession').value.trim();
+        const val = $('value').value.trim();
+        const tone = document.querySelector('.tone-opt.active')?.dataset.tone || 'professional';
 
-        if (!prof || !val) return alert("⚠️ Kasb va qiymat maydonlarini to'ldiring!");
+        if (!prof || !val) return alert('⚠️ Kasb va qiymat maydonlarini to\'ldiring!');
 
-        const bios = createBios(prof, val, tone);
-        displayBios(bios);
-    }
+        const templates = {
+            professional: [
+                `👤 ${prof}\n🎯 ${val}\n📩 Bog'lanish: DM\n🔗 Pastdagi havoladan foydalaning`,
+                `✅ Professional ${prof.toLowerCase()}\n📌 ${val}\n🌟 Sifat va ishonch\n📲 Hamkorlik uchun yozing`
+            ],
+            creative: [
+                `🎨 ${prof} — san'atkor\n💫 ${val}\n🌈 Har bir post — yangi dunyo\n👇 Kuzating`,
+                `✨ ${prof} | Kreativ yondashuv\n💎 ${val}\n🚀 Cheksiz ilhom manbai\n🔗 Link quyida`
+            ],
+            fun: [
+                `😎 ${prof} — lekin zerikarli emas!\n🎉 ${val}\n☕ Kofe bilan ishlayman\n👇 Kuzat, pushaymon bo'lmaysan`,
+                `🤩 ${prof} va boshqa ajoyib narsalar\n💪 ${val}\n😂 Ba'zan hazil, har doim foyda\n📲 Qo'shil!`
+            ],
+            minimal: [
+                `${prof}.\n${val}.\nBog'lanish: DM`,
+                `▫️ ${prof}\n▫️ ${val}\n👇`
+            ]
+        };
 
-    function createBios(p, v, tone) {
-        if (tone === 'professional') return [
-            `👤 ${p}\n🎯 ${v}\n📩 Bog'lanish: DM\n🔗 Pastdagi havoladan foydalaning`,
-            `✅ Professional ${p.toLowerCase()}\n📌 ${v}\n🌟 Sifat va ishonch\n📲 Hamkorlik uchun yozing`
-        ];
-        if (tone === 'creative') return [
-            `🎨 ${p} — san'atkor\n💫 ${v}\n🌈 Har bir post — yangi dunyo\n👇 Kuzating`,
-            `✨ ${p} | Kreativ yondashuv\n💎 ${v}\n🚀 Cheksiz ilhom manbai\n🔗 Link quyida`
-        ];
-        if (tone === 'fun') return [
-            `😎 ${p} — lekin zerikarli emas!\n🎉 ${v}\n☕ Kofe bilan ishlayman\n👇 Kuzat, pushaymon bo'lmaysan`,
-            `🤩 ${p} va boshqa ajoyib narsalar\n💪 ${v}\n😂 Ba'zan hazil, har doim foyda\n📲 Qo'shil!`
-        ];
-        return [
-            `${p}.\n${v}.\nBog'lanish: DM`,
-            `▫️ ${p}\n▫️ ${v}\n👇`
-        ];
+        displayBios(templates[tone] || templates.professional);
     }
 
     function displayBios(bios) {
-        const container = document.getElementById('results');
-        container.innerHTML = '<h3 style="margin-bottom:15px; font-size:16px;">✨ Tayyor Bio Variantlar</h3>';
+        const container = $('results');
+        container.innerHTML = '<h3 style="margin-bottom:16px; font-size:18px; font-weight:700;">✨ Tayyor Bio Variantlar</h3>';
+        container.classList.add('show');
 
         bios.forEach((bio, i) => {
             const chars = bio.length;
@@ -460,8 +536,10 @@
             card.style.animationDelay = `${i*0.1}s`;
             card.innerHTML = `
                 <div class="bio-text">${bio}</div>
-                <div class="char-count ${chars>150?'limit':''}">${chars} / 150 belgi ${chars>150?'⚠️':'✅'}</div>
-                <button class="copy-btn" onclick="copyBio(this)">📋 Nusxa</button>
+                <div class="bio-meta">
+                    <span class="char-count ${chars>150?'limit':''}">${chars} / 150 belgi ${chars>150?'⚠️':'✅'}</span>
+                    <button class="copy-btn" onclick="copyBio(this)">📋 Nusxa olish</button>
+                </div>
             `;
             card.dataset.bio = bio;
             container.appendChild(card);
@@ -470,24 +548,20 @@
     }
 
     function copyBio(btn) {
-        const card = btn.closest('.bio-card');
-        const text = card.dataset.bio;
+        const text = btn.closest('.bio-card').dataset.bio;
         navigator.clipboard.writeText(text).then(() => {
-            btn.textContent = '✅ Nusxalandi!';
+            btn.innerHTML = '✅ Nusxalandi';
             btn.classList.add('copied');
-            setTimeout(() => {
-                btn.textContent = '📋 Nusxa';
-                btn.classList.remove('copied');
-            }, 2000);
+            setTimeout(() => { btn.innerHTML = '📋 Nusxa olish'; btn.classList.remove('copied'); }, 2000);
         });
     }
 
     // ================= INIT =================
     window.addEventListener('load', () => {
-        loadTheme();
+        const savedTheme = localStorage.getItem(STORAGE_KEYS.theme) || 'default';
+        setTheme(savedTheme);
         initApp();
     });
 </script>
-
 </body>
 </html>
